@@ -5,6 +5,7 @@ import com.backend.recognitionitems.branch.dto.Branch;
 import com.backend.recognitionitems.cashiercheckout.dto.CashierCheckout;
 import com.backend.recognitionitems.cashiercheckout.dto.request.AddCashierRequestDto;
 import com.backend.recognitionitems.cashiercheckout.dto.request.EditCashierCheckoutRequestDto;
+import com.backend.recognitionitems.cashiercheckout.dto.response.CashierCheckoutBranchIdResponseDto;
 import com.backend.recognitionitems.cashiercheckout.dto.response.CashierCheckoutResponseDto;
 import com.backend.recognitionitems.user.UserRepository;
 import com.backend.recognitionitems.user.dto.User;
@@ -49,8 +50,17 @@ public class CashierCheckoutService {
         cashierCheckoutRepository.save(cashierCheckout);
     }
     @Transactional
-    public List<CashierCheckoutResponseDto> getAllCashierCheckouts() {
-        List<CashierCheckout> cashierCheckouts = cashierCheckoutRepository.findAll();
+    public List<CashierCheckoutResponseDto> getAllCashierCheckouts(Long branchManagerId) {
+        User branchManager = userRepository.findById(branchManagerId).orElse(null);
+        if (branchManager == null) {
+            return null;
+        }
+        Branch branch = branchRepository.findByBranchManagerId(branchManagerId).orElse(null);
+        if (branch == null) {
+            return null;
+        }
+        List<CashierCheckout> cashierCheckouts = branch.getCashierCheckouts();
+
         return cashierCheckouts.stream()
                 .map(cashierCheckout ->
                         CashierCheckoutResponseDto.builder()
@@ -93,5 +103,16 @@ public class CashierCheckoutService {
         } else {
             return false;
         }
+    }
+
+    public CashierCheckoutBranchIdResponseDto getBranchId(Long userId) {
+        Branch branch = branchRepository.findById(userId).orElse(null);
+        if (branch == null) {
+            return null;
+        }
+
+        return CashierCheckoutBranchIdResponseDto.builder()
+                .branchId(branch.getId())
+                .build();
     }
 }

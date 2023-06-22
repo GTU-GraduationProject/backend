@@ -248,9 +248,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @Operation(summary = "List technical staff. Local Admin can.")
-    @GetMapping("/user/technical-staff")
-    public ResponseEntity<List<TechnicalStaffResponseDto>> getAllTechnicalStaffs() {
-        List<TechnicalStaffResponseDto> technicalStaffs = userService.getTechnicalStaffs();
+    @GetMapping("/user/technical-staff/list/{localAdminId}") ///user/branch-manager/list/{localAdminId}
+    public ResponseEntity<List<TechnicalStaffResponseDto>> getAllTechnicalStaffs(@PathVariable Long localAdminId) {
+        List<TechnicalStaffResponseDto> technicalStaffs = userService.getTechnicalStaffs(localAdminId);
         return ResponseEntity.ok(technicalStaffs);
     }
 
@@ -312,10 +312,11 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
     @Operation(summary = "List cashier. Branch manager can.")
-    @GetMapping("/user/cashier")
-    public ResponseEntity<List<CashierResponseDto>> getAllCashiers() {
-        List<CashierResponseDto> cashiers = userService.getCashiers();
+    @GetMapping("/user/cashier/list/{userId}")
+    public ResponseEntity<List<CashierResponseDto>> getAllCashiers(@PathVariable Long userId) {
+        List<CashierResponseDto> cashiers = userService.getCashiers(userId);
         return ResponseEntity.ok(cashiers);
     }
 

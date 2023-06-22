@@ -223,8 +223,17 @@ public class UserService {
         return branchManagers;
     }
     @Transactional
-    public List<TechnicalStaffResponseDto> getTechnicalStaffs() {
-        List<User> users = userRepository.findByRole(UserType.TECHNICAL_STAFF);
+    public List<TechnicalStaffResponseDto> getTechnicalStaffs(Long localAdminId) {
+        Brand brand = brandRepository.findByLocalAdminId(localAdminId).orElse(null);
+        if (brand == null) {
+            return null;
+        }
+
+        List<Branch> branches = brand.getBranches();
+
+        List<User> users = branches.stream().map(
+                branch -> branch.getTechnicalStaff()).collect(Collectors.toList());
+
         return users.stream()
                 .map(user -> {
                     Branch branch = branchRepository.findByTechnicalStaffId(user.getId()).orElse(null);
@@ -269,8 +278,12 @@ public class UserService {
     }
 
     @Transactional
-    public List<CashierResponseDto> getCashiers() {
-        List<User> users = userRepository.findByRole(UserType.CASHIER);
+    public List<CashierResponseDto> getCashiers(Long userId) {
+        Branch branch = branchRepository.findById(userId).orElse(null);
+        if (branch == null) {
+            return null;
+        }
+        List<User> users = branch.getCashiers();
         return users.stream()
                 .map(user -> {
                     CashierCheckout cashierCheckout = cashierCheckoutRepository.findByCashierId(user.getId()).orElse(null);

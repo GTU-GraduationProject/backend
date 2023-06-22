@@ -1,8 +1,10 @@
 package com.backend.recognitionitems.cashiercheckout;
 
+import com.backend.recognitionitems.branch.dto.response.BranchTechnicalStaffResponseDto;
 import com.backend.recognitionitems.cashiercheckout.dto.CashierCheckout;
 import com.backend.recognitionitems.cashiercheckout.dto.request.AddCashierRequestDto;
 import com.backend.recognitionitems.cashiercheckout.dto.request.EditCashierCheckoutRequestDto;
+import com.backend.recognitionitems.cashiercheckout.dto.response.CashierCheckoutBranchIdResponseDto;
 import com.backend.recognitionitems.cashiercheckout.dto.response.CashierCheckoutResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,9 +33,9 @@ public class CashierCheckoutController {
     }
 
     @Operation(summary = "List cashier checkouts. Branch manager can.")
-    @GetMapping("/cashier-checkout/cashier-checkouts")
-    public ResponseEntity<List<CashierCheckoutResponseDto>> getAllCashierCheckouts() {
-        List<CashierCheckoutResponseDto> cashierCheckouts = cashierCheckoutService.getAllCashierCheckouts();
+    @GetMapping("/cashier-checkout/cashier-checkouts/{branchManagerId}")
+    public ResponseEntity<List<CashierCheckoutResponseDto>> getAllCashierCheckouts(@PathVariable Long branchManagerId) {
+        List<CashierCheckoutResponseDto> cashierCheckouts = cashierCheckoutService.getAllCashierCheckouts(branchManagerId);
         return ResponseEntity.ok(cashierCheckouts);
     }
 
@@ -64,5 +66,12 @@ public class CashierCheckoutController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @Operation(summary = "Get branch id.")
+    @GetMapping("/branch/branch-manager/{userId}")
+    public ResponseEntity<CashierCheckoutBranchIdResponseDto> getBranchId(@PathVariable Long userId) {
+        CashierCheckoutBranchIdResponseDto branchId = cashierCheckoutService.getBranchId(userId);
+        return ResponseEntity.ok(branchId);
     }
 }
