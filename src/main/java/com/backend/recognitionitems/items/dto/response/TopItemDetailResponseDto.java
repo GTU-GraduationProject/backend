@@ -1,0 +1,25 @@
+package com.backend.recognitionitems.items.dto.response;
+
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class TopItemDetailResponseDto {
+    private Long itemId;
+    private String itemName;
+    private Long itemTotalAmount;
+    private Long itemRemainingAmount;
+    private Long itemSoldAmount;
+    private Long productId;
+    private String productName;
+    private Long productOwnerId;
+    private String productOwnerName;
+    private String productOwnerSurname;
+    private Long branchId;
+    private String branchName;
+    private Long brandId;
+    private String brandName;
+}
